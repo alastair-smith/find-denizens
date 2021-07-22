@@ -1,5 +1,5 @@
-const { expect } = require('../helpers/expect')
 const { createSandbox } = require('sinon')
+const { expect } = require('../helpers/expect')
 const server = require('rewire')('../../src/server')
 
 describe('function server', () => {
@@ -9,6 +9,23 @@ describe('function server', () => {
     listen: () => {}
   }
   const DEFAULT_PORT = '8000'
+  const ROUTES = {
+    HEALTHCHECK: '/health'
+  }
+  const handlers = {
+    healthcheck: () => 'healthcheck'
+  }
+
+  class StubbedRoute {
+    createStubs () {
+      this.get = sandbox.stub()
+      this.all = sandbox.stub()
+
+      this.get.returns(this)
+      this.all.returns(this)
+    }
+  }
+  const healthcheckRoute = new StubbedRoute()
 
   beforeEach(() => {
     sandbox.stub(console, 'log')
@@ -16,10 +33,18 @@ describe('function server', () => {
     sandbox.stub(app, 'route')
     sandbox.spy(app, 'listen')
 
+    healthcheckRoute.createStubs()
+    app.route.withArgs(ROUTES.HEALTHCHECK).returns(healthcheckRoute)
+
     const express = sandbox.stub()
     express.returns(app)
 
-    server.__set__({ DEFAULT_PORT, express })
+    server.__set__({
+      DEFAULT_PORT,
+      ROUTES,
+      express,
+      handlers
+    })
   })
   afterEach(() => {
     delete process.env.PORT
@@ -46,5 +71,11 @@ describe('function server', () => {
   })
   it('should return the express app', () => {
     expect(server()).to.be.deep.equal(app)
+  })
+  it('should have a healthcheck GET route', () => {
+    server()
+
+    expect(app.route).to.be.calledWith(ROUTES.HEALTHCHECK)
+    expect(healthcheckRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.healthcheck)
   })
 })
