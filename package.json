@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "linter": "standard",
-    "start": "node src/index.js",
+    "start": "./src/index.js",
     "test": "nyc mocha --recursive test/unit"
   },
   "repository": {
@@ -25,11 +25,21 @@
     "nyc": "^15.1.0",
     "rewire": "^5.0.0",
     "sinon": "^11.1.1",
+    "sinon-chai": "^3.7.0",
     "standard": "^16.0.3"
   },
   "standard": {
     "envs": [
       "mocha"
+    ]
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "src/**/*.js"
+     ],
+    "exclude": [
+      "src/index.js"
     ]
   }
 }
