@@ -1,0 +1,35 @@
+{
+  "name": "find-denizens",
+  "version": "1.0.0",
+  "description": "Find a list of people who live or are within range of a given city.",
+  "main": "index.js",
+  "scripts": {
+    "linter": "standard",
+    "start": "node src/index.js",
+    "test": "nyc mocha --recursive test/unit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alastair-smith/find-denizens.git"
+  },
+  "author": "Alastair Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alastair-smith/find-denizens/issues"
+  },
+  "homepage": "https://github.com/alastair-smith/find-denizens#readme",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "express": "^4.17.1",
+    "mocha": "^9.0.2",
+    "nyc": "^15.1.0",
+    "rewire": "^5.0.0",
+    "sinon": "^11.1.1",
+    "standard": "^16.0.3"
+  },
+  "standard": {
+    "envs": [
+      "mocha"
+    ]
+  }
+}
