@@ -37,8 +37,9 @@
     "all": true,
     "include": [
       "src/**/*.js"
-     ],
+    ],
     "exclude": [
+      "src/constants.js",
       "src/index.js"
     ]
   }
