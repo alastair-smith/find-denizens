@@ -1,0 +1,32 @@
+kind: pipeline
+name: default
+
+.node-image: &node-image
+  image: node:14-alpine@sha256:5c33bc6f021453ae2e393e6e20650a4df0a4737b1882d389f17069dc1933fdc5
+
+steps:
+  - name: check dependencies
+    <<: *node-image
+    commands:
+      - npm audit --audit-level="high"
+      - npm audit --production
+
+  - name: install dependencies
+    <<: *node-image
+    commands:
+      - npm ci
+
+  - name: linter
+    <<: *node-image
+    commands:
+      - npm run linter
+    depends_on:
+      - install dependencies
+
+  - name: unit tests
+    <<: *node-image
+    commands:
+      - npm test
+    depends_on:
+      - install dependencies
+
