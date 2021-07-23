@@ -6,8 +6,10 @@ describe('function server', () => {
   const sandbox = createSandbox()
   const app = {
     route: () => {},
-    listen: () => {}
+    listen: () => {},
+    use: () => {}
   }
+  const loggerMiddlewareInstance = 'LOGGER_MIDDLEWARE_INSTANCE'
   const DEFAULT_PORT = '8000'
   const ROUTES = {
     HEALTHCHECK: '/health'
@@ -32,6 +34,7 @@ describe('function server', () => {
 
     sandbox.stub(app, 'route')
     sandbox.spy(app, 'listen')
+    sandbox.spy(app, 'use')
 
     healthcheckRoute.createStubs()
     app.route.withArgs(ROUTES.HEALTHCHECK).returns(healthcheckRoute)
@@ -43,7 +46,8 @@ describe('function server', () => {
       DEFAULT_PORT,
       ROUTES,
       express,
-      handlers
+      handlers,
+      loggerMiddleware: () => loggerMiddlewareInstance
     })
   })
   afterEach(() => {
@@ -77,5 +81,10 @@ describe('function server', () => {
 
     expect(app.route).to.be.calledWith(ROUTES.HEALTHCHECK)
     expect(healthcheckRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.healthcheck)
+  })
+  it('should log requests', () => {
+    server()
+
+    expect(app.use).to.be.calledBefore(app.route).calledWith(loggerMiddlewareInstance)
   })
 })

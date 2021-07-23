@@ -42,5 +42,8 @@
       "src/constants.js",
       "src/index.js"
     ]
+  },
+  "dependencies": {
+    "express-pino-logger": "^6.0.0"
   }
 }

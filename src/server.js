@@ -1,4 +1,5 @@
 const express = require('express')
+const loggerMiddleware = require('express-pino-logger')
 const { DEFAULT_PORT, ROUTES } = require('./constants')
 const handlers = {
   healthcheck: require('./handlers/healthcheck')
@@ -7,6 +8,8 @@ const handlers = {
 module.exports = () => {
   const port = process.env.PORT || DEFAULT_PORT
   const app = express()
+
+  app.use(loggerMiddleware())
 
   app
     .route(ROUTES.HEALTHCHECK)
