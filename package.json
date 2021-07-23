@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "linter": "standard",
+    "linter:fix": "standard --fix",
     "start": "./src/index.js",
     "test": "nyc mocha --recursive test/unit"
   },
