@@ -5,6 +5,7 @@ const server = require('rewire')('../../src/server')
 describe('function server', () => {
   const sandbox = createSandbox()
   const app = {
+    disable: () => {},
     route: () => {},
     listen: () => {},
     use: () => {}
@@ -32,9 +33,12 @@ describe('function server', () => {
   beforeEach(() => {
     sandbox.stub(console, 'log')
 
+    sandbox.spy(app, 'disable')
     sandbox.stub(app, 'route')
-    sandbox.spy(app, 'listen')
+    sandbox.stub(app, 'listen')
     sandbox.spy(app, 'use')
+
+    app.listen.callsArg(1)
 
     healthcheckRoute.createStubs()
     app.route.withArgs(ROUTES.HEALTHCHECK).returns(healthcheckRoute)
@@ -55,36 +59,41 @@ describe('function server', () => {
     sandbox.restore()
   })
 
-  it('should start an app on the port specified by environment variable', () => {
+  it('should start an app on the port specified by environment variable', async () => {
     const port = '8080'
     process.env.PORT = port
 
-    server()
+    await server()
 
     expect(app.listen).to.have.been.calledWith(port)
   })
-  it('should start an app on the default port if no environment variable is specified', () => {
-    server()
+  it('should start an app on the default port if no environment variable is specified', async () => {
+    await server()
 
     expect(app.listen).to.have.been.calledWith(DEFAULT_PORT)
   })
-  it('should log that the service has started', () => {
-    server()
+  it('should log that the service has started', async () => {
+    await server()
 
     expect(console.log).to.have.been.calledAfter(app.listen).calledWith(`Server started on port ${DEFAULT_PORT}`)
   })
-  it('should return the express app', () => {
-    expect(server()).to.be.deep.equal(app)
+  it('should return the express app', async () => {
+    expect(await server()).to.be.deep.equal(app)
   })
-  it('should have a healthcheck GET route', () => {
-    server()
+  it('should have a healthcheck GET route', async () => {
+    await server()
 
     expect(app.route).to.be.calledWith(ROUTES.HEALTHCHECK)
     expect(healthcheckRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.healthcheck)
   })
-  it('should log requests', () => {
-    server()
+  it('should log requests', async () => {
+    await server()
 
     expect(app.use).to.be.calledBefore(app.route).calledWith(loggerMiddlewareInstance)
+  })
+  it('should not disclose unneccessery information about the service in response headers', async () => {
+    await server()
+
+    expect(app.disable).to.be.calledWith('x-powered-by')
   })
 })

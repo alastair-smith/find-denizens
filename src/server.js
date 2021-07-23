@@ -5,9 +5,11 @@ const handlers = {
   healthcheck: require('./handlers/healthcheck')
 }
 
-module.exports = () => {
+module.exports = async () => {
   const port = process.env.PORT || DEFAULT_PORT
   const app = express()
+
+  app.disable('x-powered-by')
 
   app.use(loggerMiddleware())
 
@@ -15,7 +17,7 @@ module.exports = () => {
     .route(ROUTES.HEALTHCHECK)
     .get(handlers.healthcheck)
 
-  app.listen(port)
+  await new Promise(resolve => app.listen(port, resolve))
   console.log(`Server started on port ${port}`)
 
   return app
