@@ -5,28 +5,32 @@ name: default
   image: node:14-alpine@sha256:5c33bc6f021453ae2e393e6e20650a4df0a4737b1882d389f17069dc1933fdc5
 
 steps:
-  - name: check dependencies
+  - name: check node dependencies
     <<: *node-image
     commands:
       - npm audit --audit-level="high"
       - npm audit --production
 
-  - name: install dependencies
+  - name: install node dependencies
     <<: *node-image
     commands:
       - npm ci
 
-  - name: linter
+  - name: javascript linter
     <<: *node-image
     commands:
       - npm run linter
     depends_on:
-      - install dependencies
+      - install node dependencies
+
+  - name: docker linter
+    image: hadolint/hadolint:latest-alpine@sha256:e8ecdb235f7bbf2295148b72b86957cc041503c00e56d2e6928693f20710cd27
+    commands:
+      - hadolint Dockerfile
 
   - name: unit tests
     <<: *node-image
     commands:
       - npm test
     depends_on:
-      - install dependencies
-
+      - install node dependencies
