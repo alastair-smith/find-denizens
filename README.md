@@ -43,6 +43,11 @@ Both of these options will start the service on port `3000`.
     npm start
     ```
 
+## API Specification
+
+See the [OpenAPI specification](./openapi.yml) for detail on the endpoints.
+If you want to view the specification in a GUI then copy and paste it into https://editor.swagger.io/.
+
 ## Running Tests
 
 These commands require [NodeJS](https://nodejs.org/en/) 14.x.x.
