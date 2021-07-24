@@ -1,4 +1,7 @@
 module.exports = Object.freeze({
+  CITIES: {
+    LONDON: 'London'
+  },
   DEFAULT_PORT: '3000',
   ERROR_MESSAGES: {
     NOT_FOUND: 'Not found',
@@ -15,5 +18,9 @@ module.exports = Object.freeze({
   ROUTES: {
     HEALTHCHECK: '/healthcheck',
     FIND_DENIZENS_BY_CITY: '/find-denizens/city/London'
+  },
+  USERS_API: {
+    BASE_URL: 'https://bpdts-test-app.herokuapp.com',
+    USERS_LIVING_IN_CITY_PATH: '/city/{city}/users'
   }
 })
