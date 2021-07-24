@@ -1,5 +1,5 @@
 const { createSandbox } = require('sinon')
-const { expect } = require('../helpers/expect')
+const expect = require('../helpers/expect')
 const server = require('rewire')('../../src/server')
 
 describe('function server', () => {

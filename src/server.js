@@ -1,5 +1,5 @@
 const express = require('express')
-const loggerMiddleware = require('express-pino-logger')
+const loggerMiddleware = require('./middleware/logger')
 const { DEFAULT_PORT, ROUTES } = require('./constants')
 const handlers = {
   healthcheck: require('./handlers/healthcheck')

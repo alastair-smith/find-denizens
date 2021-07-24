@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "express-pino-logger": "^6.0.0"
+    "pino-http": "^5.6.0"
   }
 }
