@@ -2,7 +2,10 @@ const express = require('express')
 const loggerMiddleware = require('./middleware/logger')
 const { DEFAULT_PORT, ROUTES } = require('./constants')
 const handlers = {
-  healthcheck: require('./handlers/healthcheck')
+  error: require('./handlers/error'),
+  healthcheck: require('./handlers/healthcheck'),
+  incorrectMethod: require('./handlers/incorrectMethod'),
+  notFound: require('./handlers/notFound')
 }
 
 module.exports = async () => {
@@ -16,6 +19,10 @@ module.exports = async () => {
   app
     .route(ROUTES.HEALTHCHECK)
     .get(handlers.healthcheck)
+    .all(handlers.incorrectMethod('GET'))
+
+  app.use(handlers.notFound)
+  app.use(handlers.error)
 
   await new Promise(resolve => app.listen(port, resolve))
   console.log(`Server started on port ${port}`)

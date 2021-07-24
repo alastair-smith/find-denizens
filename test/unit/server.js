@@ -16,7 +16,10 @@ describe('function server', () => {
     HEALTHCHECK: '/health'
   }
   const handlers = {
-    healthcheck: () => 'healthcheck'
+    healthcheck: 'healthcheck',
+    incorrectMethod: method => `incorrect method, should be: ${method}`,
+    notFound: 'not found',
+    error: 'error'
   }
 
   class StubbedRoute {
@@ -86,6 +89,11 @@ describe('function server', () => {
     expect(app.route).to.be.calledWith(ROUTES.HEALTHCHECK)
     expect(healthcheckRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.healthcheck)
   })
+  it('should correctly handle any no-GET requests to the healthcheck route', async () => {
+    await server()
+
+    expect(healthcheckRoute.all).to.be.calledAfter(healthcheckRoute.get).calledOnceWithExactly('incorrect method, should be: GET')
+  })
   it('should log requests', async () => {
     await server()
 
@@ -95,5 +103,17 @@ describe('function server', () => {
     await server()
 
     expect(app.disable).to.be.calledWith('x-powered-by')
+  })
+  it('should return a not found response for any routes without handlers', async () => {
+    await server()
+
+    expect(app.use).to.be.calledWith(handlers.notFound)
+    expect(app.use.withArgs(handlers.notFound)).to.not.be.calledBefore(app.route)
+  })
+  it('should return an error response for any server errors along the journey', async () => {
+    await server()
+
+    expect(app.use).to.be.calledWith(handlers.error)
+    expect(app.use.withArgs(handlers.error)).to.not.be.calledBefore(app.route)
   })
 })
