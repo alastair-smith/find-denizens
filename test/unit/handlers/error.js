@@ -4,8 +4,8 @@ const errorHandler = require('rewire')('../../../src/handlers/error')
 
 describe('handlers function error', () => {
   const sandbox = createSandbox()
-  const ERROR_MESSAGES = { INTERNAL_SERVER_ERROR: 500 }
-  const STATUS_CODES = { INTERNAL_SERVER_ERROR: 'Internal server error' }
+  const ERROR_MESSAGES = { INTERNAL_SERVER_ERROR: 'Internal server error' }
+  const STATUS_CODES = { INTERNAL_SERVER_ERROR: 500 }
   const request = {}
   let response, next
   const appError = new Error('some internal error not to be shared with the user')

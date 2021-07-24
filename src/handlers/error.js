@@ -6,6 +6,6 @@ module.exports = (error, request, response, next) => {
   return response.headersSent
     ? next(error)
     : response
-      .status(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
-      .send({ error: STATUS_CODES.INTERNAL_SERVER_ERROR })
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .send({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR })
 }
