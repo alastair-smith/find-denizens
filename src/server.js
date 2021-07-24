@@ -3,6 +3,7 @@ const loggerMiddleware = require('./middleware/logger')
 const { DEFAULT_PORT, ROUTES } = require('./constants')
 const handlers = {
   error: require('./handlers/error'),
+  findDenizensByCity: require('./handlers/findDenizensByCity'),
   healthcheck: require('./handlers/healthcheck'),
   incorrectMethod: require('./handlers/incorrectMethod'),
   notFound: require('./handlers/notFound')
@@ -15,6 +16,11 @@ module.exports = async () => {
   app.disable('x-powered-by')
 
   app.use(loggerMiddleware())
+
+  app
+    .route(ROUTES.FIND_DENIZENS_BY_CITY)
+    .get(handlers.findDenizensByCity)
+    .all(handlers.incorrectMethod('GET'))
 
   app
     .route(ROUTES.HEALTHCHECK)

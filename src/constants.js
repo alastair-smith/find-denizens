@@ -14,6 +14,6 @@ module.exports = Object.freeze({
   HEALTHY_STATUS_MESSAGE: 'Healthy',
   ROUTES: {
     HEALTHCHECK: '/healthcheck',
-    FIND_DENIZENS_BY_CITY: '/find-denizens/city/:city'
+    FIND_DENIZENS_BY_CITY: '/find-denizens/city/London'
   }
 })

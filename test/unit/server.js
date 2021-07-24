@@ -13,13 +13,15 @@ describe('function server', () => {
   const loggerMiddlewareInstance = 'LOGGER_MIDDLEWARE_INSTANCE'
   const DEFAULT_PORT = '8000'
   const ROUTES = {
-    HEALTHCHECK: '/health'
+    HEALTHCHECK: '/health',
+    FIND_DENIZENS_BY_CITY: '/find-denizens/city/London'
   }
   const handlers = {
+    error: 'error',
+    findDenizensByCity: 'find denizens by city',
     healthcheck: 'healthcheck',
     incorrectMethod: method => `incorrect method, should be: ${method}`,
-    notFound: 'not found',
-    error: 'error'
+    notFound: 'not found'
   }
 
   class StubbedRoute {
@@ -32,6 +34,7 @@ describe('function server', () => {
     }
   }
   const healthcheckRoute = new StubbedRoute()
+  const findDenizensByCityRoute = new StubbedRoute()
 
   beforeEach(() => {
     sandbox.stub(console, 'log')
@@ -45,6 +48,9 @@ describe('function server', () => {
 
     healthcheckRoute.createStubs()
     app.route.withArgs(ROUTES.HEALTHCHECK).returns(healthcheckRoute)
+
+    findDenizensByCityRoute.createStubs()
+    app.route.withArgs(ROUTES.FIND_DENIZENS_BY_CITY).returns(findDenizensByCityRoute)
 
     const express = sandbox.stub()
     express.returns(app)
@@ -89,7 +95,7 @@ describe('function server', () => {
     expect(app.route).to.be.calledWith(ROUTES.HEALTHCHECK)
     expect(healthcheckRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.healthcheck)
   })
-  it('should correctly handle any no-GET requests to the healthcheck route', async () => {
+  it('should correctly handle any non-GET requests to the healthcheck route', async () => {
     await server()
 
     expect(healthcheckRoute.all).to.be.calledAfter(healthcheckRoute.get).calledOnceWithExactly('incorrect method, should be: GET')
@@ -115,5 +121,16 @@ describe('function server', () => {
 
     expect(app.use).to.be.calledWith(handlers.error)
     expect(app.use.withArgs(handlers.error)).to.not.be.calledBefore(app.route)
+  })
+  it('should register the get handler for finding denizens by city', async () => {
+    await server()
+
+    expect(app.route).to.be.calledWith(ROUTES.FIND_DENIZENS_BY_CITY)
+    expect(findDenizensByCityRoute.get).to.be.calledBefore(app.listen).calledOnceWithExactly(handlers.findDenizensByCity)
+  })
+  it('should correctly handle any non-GET requests to the find denizens by city route', async () => {
+    await server()
+
+    expect(findDenizensByCityRoute.all).to.be.calledAfter(findDenizensByCityRoute.get).calledOnceWithExactly('incorrect method, should be: GET')
   })
 })
