@@ -1,7 +1,7 @@
 {
   "name": "find-denizens",
   "version": "1.0.0",
-  "description": "Find a list of people who live or are within range of a given city.",
+  "description": "API to find a list of people who live or are within range of a given city.",
   "main": "index.js",
   "scripts": {
     "linter": "standard",

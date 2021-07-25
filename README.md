@@ -1,6 +1,6 @@
 # Find Denizens
 
->Find a list of people who live or are within range of a given city.
+>API to find a list of people who live or are within range of a given city.
 
 [![Build Status](https://cloud.drone.io/api/badges/alastair-smith/find-denizens/status.svg)](https://cloud.drone.io/alastair-smith/find-denizens)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
