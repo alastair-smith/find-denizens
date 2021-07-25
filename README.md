@@ -7,7 +7,6 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Licence ISC](https://img.shields.io/badge/Licence-ISC-blue)](https://choosealicense.com/licenses/isc/)
 
-
 ## Running Locally
 
 Both of these options will start the service on port `3000`.

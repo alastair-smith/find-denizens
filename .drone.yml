@@ -56,7 +56,7 @@ steps:
         - edge
 
   - name: scan image
-    image: aquasec/trivy
+    image: aquasec/trivy@sha256:b32edfff76ba46b5c9029704145303d372e3745f6bf372dd65fd01e710585282
     commands:
       - trivy alsmith/find-denizens:edge
     depends_on:
@@ -91,7 +91,7 @@ steps:
       - echo "Service is healthy"
 
   - name: postman
-    image: postman/newman
+    image: postman/newman:5.2.4-alpine@sha256:5aaf9162bf197d2484f368a5ca3cf7b45db0cb61201cc9c2bb952240269db0f0
     commands:
       - newman run ./test/endToEnd/find-denizens.postman_collection.json --environment=./test/endToEnd/pipeline.postman_environment.json
     depends_on:
