@@ -1,0 +1,95 @@
+{
+	"info": {
+		"_postman_id": "42697e89-1835-49ec-9719-2b32aa7bdd6e",
+		"name": "find-denizens",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/healthcheck",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', () => {",
+							"  pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test('Body is correct', () => {",
+							"  pm.response.to.have.body({\"status\": \"Healthy\"})",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api}}/healthcheck",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"healthcheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/find-denizens/city/London",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', () => {",
+							"  pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test('Body contains data object', () => {",
+							"  pm.response.to.have.jsonBody('data')",
+							"})",
+							"",
+							"pm.test('Users have all properties', () => {",
+							"  const expectedProperties = [",
+							"    'id',",
+							"    'first_name',",
+							"    'last_name',",
+							"    'email',",
+							"    'ip_address',",
+							"    'latitude',",
+							"    'longitude',",
+							"    'city'",
+							"  ]",
+							"  pm.response.json().data.forEach(user => {",
+							"    pm.expect(Object.keys(user)).to.deep.equal(expectedProperties)",
+							"  })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api}}/find-denizens/city/London",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"find-denizens",
+						"city",
+						"London"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

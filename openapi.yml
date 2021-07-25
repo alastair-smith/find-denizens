@@ -1,0 +1,77 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Find Denizens
+  license:
+    name: ISC License
+servers:
+  - url: http://localhost:3000
+    description: local machine
+paths:
+  /find-denizens/city/London:
+    get:
+      summary: List all users who are listed as living in London, or whose coordinates are within 50 miles of London.
+      responses:
+        "200":
+          description: An array of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/FindDenizens"
+  /healthcheck:
+    get:
+      summary: See if the service is healthy
+      responses:
+        "200":
+          description: Simple message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Healthcheck"
+components:
+  schemas:
+    FindDenizens:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    User:
+      type: object
+      required:
+        - city
+        - email
+        - first_name
+        - id
+        - ip_address
+        - last_name
+        - latitude
+        - longitude
+      properties:
+        city:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        id:
+          type: integer
+          format: int64
+        ip_address:
+          type: string
+        last_name:
+          type: string
+        latitude:
+          type: string
+        longitude:
+          type: string
+    Healthcheck:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: Healthy

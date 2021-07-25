@@ -1,0 +1,98 @@
+kind: pipeline
+type: docker
+name: validate
+
+.node-image: &node-image
+  image: node:14-alpine@sha256:5c33bc6f021453ae2e393e6e20650a4df0a4737b1882d389f17069dc1933fdc5
+
+steps:
+  - name: check node dependencies
+    <<: *node-image
+    commands:
+      - npm audit --audit-level="high"
+      - npm audit --production
+
+  - name: install node dependencies
+    <<: *node-image
+    commands:
+      - npm ci
+
+  - name: javascript linter
+    <<: *node-image
+    commands:
+      - npm run linter
+    depends_on:
+      - install node dependencies
+
+  - name: docker linter
+    image: hadolint/hadolint:latest-alpine@sha256:e8ecdb235f7bbf2295148b72b86957cc041503c00e56d2e6928693f20710cd27
+    commands:
+      - hadolint Dockerfile
+
+  - name: unit tests
+    <<: *node-image
+    commands:
+      - npm test
+    depends_on:
+      - install node dependencies
+
+---
+kind: pipeline
+type: docker
+name: build
+depends_on:
+  - validate
+
+steps:
+  - name: docker build
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DOCKERHUB_USERNAME
+      password:
+        from_secret: DOCKERHUB_PASSWORD
+      repo: alsmith/find-denizens
+      tags:
+        - edge
+
+  - name: scan image
+    image: aquasec/trivy@sha256:b32edfff76ba46b5c9029704145303d372e3745f6bf372dd65fd01e710585282
+    commands:
+      - trivy alsmith/find-denizens:edge
+    depends_on:
+      - docker build
+
+---
+kind: pipeline
+type: docker
+name: test
+depends_on:
+  - build
+
+services:
+  - name: find-denizens
+    image: alsmith/find-denizens:edge
+
+steps:
+  - name: service healthy
+    image: alpine
+    commands:
+      - counter=0
+      - |
+        until $(wget --spider -q http://find-denizens:3000/healthcheck); do
+          counter=$((counter+1))
+          echo "Attempt: $counter failed"
+          if [ "$counter" -ge 5 ]; then
+            echo "Max retries reached, service is not healthy"
+            exit 1
+          fi
+          sleep 5
+        done
+      - echo "Service is healthy"
+
+  - name: postman
+    image: postman/newman:5.2.4-alpine@sha256:5aaf9162bf197d2484f368a5ca3cf7b45db0cb61201cc9c2bb952240269db0f0
+    commands:
+      - newman run ./test/endToEnd/find-denizens.postman_collection.json --environment=./test/endToEnd/pipeline.postman_environment.json
+    depends_on:
+      - service healthy

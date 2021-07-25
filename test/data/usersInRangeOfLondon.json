@@ -1,0 +1,62 @@
+[
+  {
+    "id": 500,
+    "first_name": "Grace",
+    "last_name": "Goldberg",
+    "email": "g@g.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  },
+  {
+    "id": 600,
+    "first_name": "Harry",
+    "last_name": "Hibbert",
+    "email": "h@h.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  },
+  {
+    "id": 612,
+    "first_name": "Ingrid",
+    "last_name": "Isaacs",
+    "email": "i@i.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  },
+  {
+    "id": 789,
+    "first_name": "James",
+    "last_name": "Joyce",
+    "email": "j@j.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  },
+  {
+    "id": 876,
+    "first_name": "Kelly",
+    "last_name": "Kirkman",
+    "email": "k@k.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  },
+  {
+    "id": 999,
+    "first_name": "Laurence",
+    "last_name": "Lane",
+    "email": "l@l.com",
+    "ip_address": "0.0.0.0",
+    "latitude": 0.111111,
+    "longitude": 0.111111,
+    "city": "Kent"
+  }
+]
