@@ -11,7 +11,7 @@ describe('operator function findDenizensByCity', () => {
   const CITIES = {
     LONDON: 'London'
   }
-  let getUsersLivingInCity, getUserIDsInRangeOfCity
+  let getUsersLivingInCity, getUserIDsInRangeOfCity, getUserFromID
 
   beforeEach(() => {
     getUsersLivingInCity = sandbox.stub()
@@ -24,13 +24,22 @@ describe('operator function findDenizensByCity', () => {
     getUserIDsInRangeOfCity = sandbox.stub()
     getUserIDsInRangeOfCity
       .withArgs(CITIES.LONDON)
-      .resolves(testData.usersInRangeOfLondon)
+      .resolves(testData.usersInRangeOfLondon.map(({ id }) => id))
     getUserIDsInRangeOfCity
       .resolves([])
 
+    getUserFromID = sandbox.stub()
+    testData.usersInRangeOfLondon.forEach(user => {
+      getUserFromID
+        .withArgs(user.id)
+        .resolves(user)
+    })
+
     findDenizensByCityOperator.__set__({
+      CITIES,
       getUsersLivingInCity,
-      getUserIDsInRangeOfCity
+      getUserIDsInRangeOfCity,
+      getUserFromID
     })
   })
   afterEach(() => {
@@ -59,6 +68,33 @@ describe('operator function findDenizensByCity', () => {
 
     expect(await findDenizensByCityOperator()).to.deep.equal({
       data: testData.usersInRangeOfLondon
+    })
+  })
+  it('should include both users living and within range of London when both sets exist but have no overlap', async () => {
+    expect(await findDenizensByCityOperator()).to.deep.equal({
+      data: [...testData.usersLivingInLondon, ...testData.usersInRangeOfLondon]
+    })
+  })
+  it('should only include a user once if they live in London and are within range', async () => {
+    const someUserLivingInLondon = testData.usersLivingInLondon[0]
+    const usersInRange = [...testData.usersInRangeOfLondon, someUserLivingInLondon]
+
+    getUserIDsInRangeOfCity.reset()
+    getUserIDsInRangeOfCity
+      .withArgs(CITIES.LONDON)
+      .resolves(usersInRange.map(({ id }) => id))
+    getUserIDsInRangeOfCity
+      .resolves([])
+
+    getUserFromID.reset()
+    usersInRange.forEach(user => {
+      getUserFromID
+        .withArgs(user.id)
+        .resolves(user)
+    })
+
+    expect(await findDenizensByCityOperator()).to.deep.equal({
+      data: [...testData.usersLivingInLondon, ...testData.usersInRangeOfLondon]
     })
   })
 })
