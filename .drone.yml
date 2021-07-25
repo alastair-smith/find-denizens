@@ -44,11 +44,6 @@ depends_on:
   - validate
 
 steps:
-  - name: generate tags
-    image: alpine
-    commands:
-      - echo -n "$DRONE_COMMIT" > .tags
-
   - name: docker build
     image: plugins/docker
     settings:
@@ -57,12 +52,47 @@ steps:
       password:
         from_secret: DOCKERHUB_PASSWORD
       repo: alsmith/find-denizens
-    depends_on:
-      - generate tags
+      tags:
+        - edge
 
   - name: scan image
     image: aquasec/trivy
     commands:
-      - trivy "alsmith/find-denizens:$DRONE_COMMIT"
+      - trivy alsmith/find-denizens:edge
     depends_on:
       - docker build
+
+---
+kind: pipeline
+type: docker
+name: test
+depends_on:
+  - build
+
+services:
+  - name: find-denizens
+    image: alsmith/find-denizens:edge
+
+steps:
+  - name: service healthy
+    image: alpine
+    commands:
+      - counter=0
+      - |
+        until $(wget --spider -q http://find-denizens:3000/healthcheck); do
+          counter=$((counter+1))
+          echo "Attempt: $counter failed"
+          if [ "$counter" -ge 5 ]; then
+            echo "Max retries reached, service is not healthy"
+            exit 1
+          fi
+          sleep 5
+        done
+      - echo "Service is healthy"
+
+  - name: postman
+    image: postman/newman
+    commands:
+      - newman run ./test/endToEnd/find-denizens.postman_collection.json --environment=./test/endToEnd/pipeline.postman_environment.json
+    depends_on:
+      - service healthy
