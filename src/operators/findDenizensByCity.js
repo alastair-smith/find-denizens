@@ -15,7 +15,8 @@ module.exports = async () => {
     .filter(rangeUserID => !usersLivingInCity.some(
       ({ id: livingUserID }) => livingUserID === rangeUserID
     ))
-    .map(getUserFromID))
+    .map(getUserFromID)
+  )
 
   const denizens = [...usersLivingInCity, ...usersInRangeNotLivingInCity]
 
