@@ -35,3 +35,34 @@ steps:
       - npm test
     depends_on:
       - install node dependencies
+
+---
+kind: pipeline
+type: docker
+name: build
+depends_on:
+  - validate
+
+steps:
+  - name: generate tags
+    image: alpine
+    commands:
+      - echo -n "$DRONE_COMMIT" > .tags
+
+  - name: docker build
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DOCKERHUB_USERNAME
+      password:
+        from_secret: DOCKERHUB_PASSWORD
+      repo: alsmith/find-denizens
+    depends_on:
+      - generate tags
+
+  - name: scan image
+    image: aquasec/trivy
+    commands:
+      - trivy "alsmith/find-denizens:$DRONE_COMMIT"
+    depends_on:
+      - docker build
