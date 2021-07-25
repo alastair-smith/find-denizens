@@ -11,6 +11,8 @@
 
 Both of these options will start the service on port `3000`.
 
+The primary endpoint for finding people living in London and people within 50 miles of London can be reached at http://localhost:3000/find-denizens/city/London.
+
 ### Using Docker (Recommended)
 
 >Requires [Docker](https://www.docker.com/)
@@ -81,6 +83,14 @@ And any fixes can be ran with:
 ```bash
 npm run linter:fix
 ```
+
+### End to End
+
+>The end to end requests require [postman](https://www.postman.com/) to be installed.
+
+1. Import the collection and environment from the [./test/endToEnd](./test/endToEnd) directory into postman
+1. Start the service locally
+1. Run the collection using the impoted environment in postman
 
 ## CI Pipeline
 
