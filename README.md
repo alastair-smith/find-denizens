@@ -3,6 +3,7 @@
 >API to find a list of people who live or are within range of a given city.
 
 [![Build Status](https://cloud.drone.io/api/badges/alastair-smith/find-denizens/status.svg)](https://cloud.drone.io/alastair-smith/find-denizens)
+[![Docker Image](https://img.shields.io/badge/dockerhub-alsmith&#47;find&#8211;denizens-blue)](https://hub.docker.com/r/alsmith/find-denizens)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Licence ISC](https://img.shields.io/badge/Licence-ISC-blue)](https://choosealicense.com/licenses/isc/)
 
@@ -17,7 +18,15 @@ The primary endpoint for finding people living in London and people within 50 mi
 
 >Requires [Docker](https://www.docker.com/)
 
-1. Build the docker image
+1. Either:
+
+    A. Pull the docker image
+
+    ```bash
+    docker pull alsmith/find-denizens:latest
+    ```
+
+    B. Build the docker image locally
 
     ```bash
     docker build . -t find-denizens
